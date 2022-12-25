@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { GoogleMap } from '@react-google-maps/api';
+import { GoogleMap, DirectionsRenderer, DirectionsService } from '@react-google-maps/api';
 import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
 import { DirectionMarker } from "../DirectionMarker";
@@ -23,11 +23,6 @@ const posi = [
   { lat: 50.44674295691523, lng: 30.453867984211996 },
   { lat: 50.44742795916658, lng: 30.453964727138725 },
 ];
-
-const testPOs = {
-   "lat": 50.447170321394644,
-   "lng": 30.45452449426277
- }
 
   
 const Map = ({center}) => {
