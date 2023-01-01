@@ -1,4 +1,5 @@
 import { Map } from './components/Map';
+import { Camera } from './components/Camera/Camera';
 import React from 'react';
 import { useJsApiLoader } from '@react-google-maps/api'
 
@@ -21,6 +22,10 @@ const App = () => {
   return (
     <div className="App">
       {isLoaded ? <Map center={defaultCenter}/> : <h2>Loading...</h2>}
+      
+      <Camera/>
+      <Camera/>
+      <Camera/>
     </div>
   );
 }
