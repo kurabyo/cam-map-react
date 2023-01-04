@@ -1,22 +1,28 @@
 import { Marker } from "@react-google-maps/api";
 import m from './DeviceMarker.module.css'
-import React, { useState } from "react";
+import React from "react";
 
 
 
-export const DeviceMarker = ({position, camName}) => {
-  const [pickMarker, setMarkerPick] = useState(false);
-  // Choose marker by rc
-  let pickCamera = () => { 
-      setMarkerPick(!pickMarker);
-  }
+export const DeviceMarker = ({position, name, state, id}) => {
+  const [pickState, setPickState] = React.useState(false)
+  
 
   return (
     <Marker
       position={position}
-      icon={{ url: "/devicemarker.svg", scaledSize: { width: 30, height: 30 }}}
-      label={{className: pickMarker ? m.markeron : m.marker, text: camName}}
-      onRightClick={pickCamera}
+      icon={{ url: "/devicemarker.svg", scaledSize: { width: 30, height: 30 } }}
+      label={{ className: pickState ? m.markeron : m.marker, text: name }}
+      onRightClick={() => {
+        if (!state.selected) {
+          setPickState(true)
+          state.setSelected(id)
+        }
+        else if (state.selected === id) {
+          setPickState(false);
+          state.setSelected(null)
+        }
+      }}
     />
   );
 }

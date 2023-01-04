@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { GoogleMap } from '@react-google-maps/api';
+import React from "react";
+import { Autocomplete, GoogleMap } from '@react-google-maps/api';
 import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
 import { DirectionMarker } from "../DirectionMarker";
@@ -15,36 +15,28 @@ const defaultOptions = {
   panControl: false,
   disableDoubleClickZoom: true
 };
-
-// Коoрдинати камер
-// const posi = [
-//   { lat: 50.44714720363349, lng: 30.452590622531584 },
-//   { lat: 50.44757789474116, lng: 30.452964910951152 },
-//   { lat: 50.44674295691523, lng: 30.453867984211996 },
-//   { lat: 50.44742795916658, lng: 30.453964727138725 },
-// ];
-
   
 const Map = ({center}) => {
-    const [markerList, setMarkerList] = useState([]);
-    // const [camsList, setCamsList] = useState( );
-    const [posCoordCams, setPosCoordCams] = useState([
+    const [markersList, setMarkersList] = React.useState([]);
+    const [camsCoordinates, setCamsCoordinates] = React.useState([
       { lat: 50.44714720363349, lng: 30.452590622531584 },
       { lat: 50.44757789474116, lng: 30.452964910951152 },
       { lat: 50.44674295691523, lng: 30.453867984211996 },
       { lat: 50.44742795916658, lng: 30.453964727138725 },
     ]);
-
+    const [selected, setSelected] = React.useState(null)
+   
+    
     // Цикл який заповнює масив by DeviceMarkers
-    const camsList = posCoordCams.map((item, indx) => <DeviceMarker key={indx.toString()} position={item} camName={`Cam ${indx+1}`} />)
+    const camsList = camsCoordinates.map((item, indx) => <DeviceMarker state={{selected, setSelected}} key={indx.toString()} id={indx.toString()} position={item} name={`Cam ${indx+1}`} />)
 
     // Додавання маркера кліком по мапі 
     const addMarkerClick = (env) => {
-      setMarkerList(markerList.concat(<DirectionMarker key={markerList.length} position={{lat: env.latLng.lat(), lng: env.latLng.lng()}}/>))
+      setMarkersList(markersList.concat(<DirectionMarker key={markersList.length} position={{lat: env.latLng.lat(), lng: env.latLng.lng()}}/>))
     }
     
-    // Defaul code
-    const mapRef = useRef(undefined)
+    // Default code
+    const mapRef = React.useRef(undefined)
 
     const onLoad = React.useCallback(function callback(map) {   
         mapRef.current = map
@@ -57,7 +49,7 @@ const Map = ({center}) => {
     return (
       <div className={s.container}>
 
-        <button onClick={() => setMarkerList([])} >CLEAR MARKERS</button>
+        <button onClick={() => setMarkersList([])} >CLEAR MARKERS</button>
 
         <GoogleMap
           mapContainerStyle={containerStyle}
@@ -68,16 +60,13 @@ const Map = ({center}) => {
           options={defaultOptions}
           onClick={(env) => addMarkerClick(env)}
         >
-          
-
-
-          {/* Рендер маркерів напрямку */}
-          {markerList}
 
           {/* Рендер маркерів камер */}
-          {camsList}          
+          {camsList}
+
+          {/* Рендер маркерів напрямку */}
+          {markersList}          
         </GoogleMap>
-        
       </div>
     );
 }
