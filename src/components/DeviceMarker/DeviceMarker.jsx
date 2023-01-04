@@ -17,10 +17,12 @@ export const DeviceMarker = ({position, name, state, id}) => {
         if (!state.selected) {
           setPickState(true)
           state.setSelected(id)
+          state.setSelectedOrigin(Object.values(position))
         }
         else if (state.selected === id) {
           setPickState(false);
           state.setSelected(null)
+          state.setSelectedOrigin(null)
         }
       }}
     />

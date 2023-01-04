@@ -23,10 +23,6 @@ const App = () => {
   return (
     <div className="App">
       {isLoaded ? <Map center={defaultCenter}/> : <h2>Loading...</h2>}
-      
-      <Camera/>
-      <Camera/>
-      <Camera/>
     </div>
   );
 }
