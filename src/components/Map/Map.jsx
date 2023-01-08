@@ -1,5 +1,5 @@
-import React, {Button} from "react";
-import { Autocomplete, GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
+import React, { useRef } from "react";
+import { GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
 import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
 import { DirectionMarker } from "../DirectionMarker";
@@ -17,16 +17,16 @@ const defaultOptions = {
 };
   
 const Map = ({center}) => {
+  // Markers stuff
     const [markersList, setMarkersList] = React.useState([]);
     const [camsCoordinates, setCamsCoordinates] = React.useState([
       { lat: 50.44714720363349, lng: 30.452590622531584 },
       { lat: 50.44757789474116, lng: 30.452964910951152 },
       { lat: 50.44674295691523, lng: 30.453867984211996 },
       { lat: 50.44742795916658, lng: 30.453964727138725 },
-      { lat: 50.44942795916658, lng: 30.453964727138725 },
     ]);
+    const camsNewCoordinates = useRef(camsCoordinates)
     const [selected, setSelected] = React.useState(null)
-    
 
     // Direction stuff
     const [directionsResponse, setDirectionsResponse] = React.useState(null)
@@ -65,10 +65,10 @@ const Map = ({center}) => {
       setMarkersList([]);
     }
     
-    // Цикл який заповнює масив by DeviceMarkers
+    // Adding Device Markers in array by coordinates
     const camsList = camsCoordinates.map((coordinate, indx) => <DeviceMarker state={{selected, setSelected, setSelectedOrigin}} key={indx.toString()} id={indx.toString()} position={coordinate} name={`Cam ${indx+1}`} />)
 
-    // Додавання маркера кліком по мапі 
+    // Adding Markers in array by click
     const addMarkerClick = (env) => {
       setMarkersList(markersList.concat(<DirectionMarker key={markersList.length} position={{lat: env.latLng.lat(), lng: env.latLng.lng()}}/>))
       setSelectedDestination([env.latLng.lat(), env.latLng.lng()])
@@ -105,7 +105,7 @@ const Map = ({center}) => {
           Clear Route
         </button>
 
-        <button type="submit" onClick={() => console.log(selectedOrigin)}>
+        <button type="submit" onClick={() => console.log({distance, duration})}>
           Viev Console
         </button>
 
@@ -123,10 +123,10 @@ const Map = ({center}) => {
             <DirectionsRenderer directions={directionsResponse} />
           )}
 
-          {/* Рендер маркерів камер */}
+          {/* Device Markers render */}
           {camsList}
 
-          {/* Рендер маркерів напрямку */}
+          {/* Direction Markers render */}
           {markersList}
         </GoogleMap>
       </div>
