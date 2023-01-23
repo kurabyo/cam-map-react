@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Circle } from "@react-google-maps/api";
 
 export function ConcentrationArea({position, concentration}) {
