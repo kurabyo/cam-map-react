@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
 import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
 import { DirectionMarker } from "../DirectionMarker";
+
 
 const containerStyle = {
     width: '1000px',
@@ -13,10 +14,24 @@ const defaultOptions = {
   streetViewControl: false,
   KeyboardShortcuts: false,
   panControl: false,
-  disableDoubleClickZoom: true
+  disableDoubleClickZoom: true,
 };
   
 const Map = ({center}) => {
+  // Concentration stuff 
+  const [concentration, setConcentration] = useState(0);
+    let i = 0
+
+    useEffect(() => {
+      setInterval(() => {
+        fetch('https://jsonplaceholder.typicode.com/todos')
+        .then((res) => res.json())
+        .then((data) => setConcentration(prev => data[i].id))
+        .catch((err) => console.log(err));
+        i++
+      }, 1000);
+    }, [i]);
+
   // Markers stuff
     const [markersList, setMarkersList] = React.useState([]);
     const [camsCoordinates, setCamsCoordinates] = React.useState([
@@ -66,11 +81,27 @@ const Map = ({center}) => {
     }
     
     // Adding Device Markers in array by coordinates
-    const camsList = camsCoordinates.map((coordinate, indx) => <DeviceMarker state={{selected, setSelected, setSelectedOrigin}} key={indx.toString()} id={indx.toString()} position={coordinate} name={`Cam ${indx+1}`} />)
+    const camsList = camsCoordinates.map((coordinate, indx) => (
+      <DeviceMarker
+        state={{ selected, setSelected, setSelectedOrigin }}
+        key={indx.toString()}
+        id={indx.toString()}
+        position={coordinate}
+        name={`Cam ${indx + 1}`}
+        concentration={concentration}
+      />
+    ));
 
     // Adding Markers in array by click
     const addMarkerClick = (env) => {
-      setMarkersList(markersList.concat(<DirectionMarker key={markersList.length} position={{lat: env.latLng.lat(), lng: env.latLng.lng()}}/>))
+      setMarkersList(
+        markersList.concat(
+          <DirectionMarker
+            key={markersList.length}
+            position={{ lat: env.latLng.lat(), lng: env.latLng.lng() }}
+          />
+        )
+      );
       setSelectedDestination([env.latLng.lat(), env.latLng.lng()])
     }
     
@@ -87,6 +118,7 @@ const Map = ({center}) => {
 
     return (
       <div className={s.container}>
+
         <button
           onClick={() => {
             setMarkersList([]);
