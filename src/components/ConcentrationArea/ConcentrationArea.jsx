@@ -28,8 +28,11 @@ export function ConcentrationArea({position, concentration}) {
         radius={25}
         options={{
           fillColor: `#${conToHexcon(concentration)}00`,
-          fillOpacity: 1,
+          fillOpacity: 0.6,
           strokeWeight: 1,
+        }}
+        onMouseMove={() => {
+          console.log(concentration)
         }}
       />
     </div>

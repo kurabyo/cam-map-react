@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
 import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
@@ -20,36 +20,37 @@ const defaultOptions = {
 const Map = ({center}) => {
   // Concentration stuff 
   const [concentration, setConcentration] = useState(0);
-    let i = 0
+  const count = useRef(0)
 
     useEffect(() => {
       setInterval(() => {
+        if (count.current > 100) count.current = 0
         fetch('https://jsonplaceholder.typicode.com/todos')
         .then((res) => res.json())
-        .then((data) => setConcentration(prev => data[i].id))
+        .then((data) => setConcentration(prev => data[count.current].id + Math.random()))
         .catch((err) => console.log(err));
-        i++
-      }, 1000);
-    }, [i]);
+        count.current++
+      }, 250);
+    }, []);
 
   // Markers stuff
-    const [markersList, setMarkersList] = React.useState([]);
-    const [camsCoordinates, setCamsCoordinates] = React.useState([
+    const [markersList, setMarkersList] = useState([]);
+    const [camsCoordinates, setCamsCoordinates] = useState([
       { lat: 50.44714720363349, lng: 30.452590622531584 },
       { lat: 50.44757789474116, lng: 30.452964910951152 },
       { lat: 50.44674295691523, lng: 30.453867984211996 },
       { lat: 50.44742795916658, lng: 30.453964727138725 },
     ]);
     const camsNewCoordinates = useRef(camsCoordinates)
-    const [selected, setSelected] = React.useState(null)
+    const [selected, setSelected] = useState(null)
 
     // Direction stuff
-    const [directionsResponse, setDirectionsResponse] = React.useState(null)
-    const [distance, setDistance] = React.useState('')
-    const [duration, setDuration] = React.useState('')
+    const [directionsResponse, setDirectionsResponse] = useState(null)
+    const [distance, setDistance] = useState('')
+    const [duration, setDuration] = useState('')
 
-    const [selectedOrigin, setSelectedOrigin] = React.useState(null)
-    const [selectedDestination, setSelectedDestination] = React.useState(null)
+    const [selectedOrigin, setSelectedOrigin] = useState(null)
+    const [selectedDestination, setSelectedDestination] = useState(null)
 
     async function calculateRoute() {
       if(selectedOrigin === null || selectedDestination === null) 
@@ -106,13 +107,13 @@ const Map = ({center}) => {
     }
     
     // Default code
-    const mapRef = React.useRef(undefined)
+    const mapRef = useRef(undefined)
 
-    const onLoad = React.useCallback(function callback(map) {   
+    const onLoad = useCallback(function callback(map) {   
         mapRef.current = map
       }, [])
     
-    const onUnmount = React.useCallback(function callback(map) {
+    const onUnmount = useCallback(function callback(map) {
         mapRef.current = undefined
       }, []);
 
