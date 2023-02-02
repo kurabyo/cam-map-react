@@ -2,8 +2,8 @@ import { Map } from './components/Map';
 import { Camera } from './components/Camera/Camera';
 import React from 'react';
 import { useJsApiLoader } from '@react-google-maps/api'
-
 import './App.css';
+import { FunctionGraph } from './components/FunctionGraph';
 const API_KEY = process.env.REACT_APP_API_KEY
 
 const defaultCenter = {
@@ -23,6 +23,9 @@ const App = () => {
   return (
     <div className="App">
       {isLoaded ? <Map center={defaultCenter}/> : <h2>Loading...</h2>}
+      <Camera />
+      <Camera />
+      <FunctionGraph />
     </div>
   );
 }

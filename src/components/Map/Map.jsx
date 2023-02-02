@@ -7,7 +7,7 @@ import { DirectionMarker } from "../DirectionMarker";
 
 const containerStyle = {
     width: '1000px',
-    height: '700px'
+    height: '600px'
 };
 
 const defaultOptions = {

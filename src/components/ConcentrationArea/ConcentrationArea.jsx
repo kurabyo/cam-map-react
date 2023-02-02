@@ -1,7 +1,7 @@
 import React from 'react'
 import { Circle } from "@react-google-maps/api";
 
-export function ConcentrationArea({position, concentration}) {
+export const ConcentrationArea = ({position, concentration}) => {
   
   
   const conToHexcon = (con) => {
