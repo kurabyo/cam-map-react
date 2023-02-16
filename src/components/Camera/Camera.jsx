@@ -1,10 +1,10 @@
 import React from "react";
 import c from './Camera.module.css'
 
-export const Camera = () => {
+export const Camera = (props) => {
     return (
         <div className={c.camitem}>
-            cam
+            <iframe className={c.frame} src={props.video} title="video" allowFullScreen>NO SIGNAL</iframe>
         </div>
     )
 }

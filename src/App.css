@@ -1,5 +1,13 @@
 .App {
-  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
 
-  display: flex;
+  align-items: center;
+  justify-items: center;
+
+  gap: 15px;
+
+ 
 }
+
