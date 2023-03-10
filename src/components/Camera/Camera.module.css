@@ -2,12 +2,6 @@
     border: 4px solid black;
     width: 300px;
     height: 300px;
-}
 
-.frame {
-    
-    height: 1080px;
-    width: 1920px;
-
-    transform: scale(0.15, 0.27) translate(-281%, -134%);
+    align-self: center;
 }

@@ -4,8 +4,6 @@ import React from 'react';
 import { useJsApiLoader } from '@react-google-maps/api'
 import './App.css';
 import { FunctionGraph } from './components/FunctionGraph';
-
-
 const API_KEY = process.env.REACT_APP_API_KEY
 
 const defaultCenter = {
@@ -18,16 +16,16 @@ const App = () => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: API_KEY,
-    libraries: ['places', 'drawing']
+    libraries: ['places']
   })
 
 
   return (
     <div className="App">
-      {isLoaded ? <Map className='map' center={defaultCenter}/> : <h2>Loading...</h2>}
-      <FunctionGraph />
-      <Camera video={'https://192.168.31.145:8080/video'}/>
+      {isLoaded ? <Map center={defaultCenter}/> : <h2>Loading...</h2>}
       <Camera />
+      <Camera />
+      <FunctionGraph />
     </div>
   );
 }
