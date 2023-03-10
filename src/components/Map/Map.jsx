@@ -4,10 +4,9 @@ import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
 import { DirectionMarker } from "../DirectionMarker";
 
-
 const containerStyle = {
-    width: '1000px',
-    height: '600px'
+  width: "75vw",
+  height: "680px",
 };
 
 const defaultOptions = {
@@ -20,6 +19,9 @@ const defaultOptions = {
 const Map = ({center}) => {
   // Concentration stuff 
   const [concentration, setConcentration] = useState(0);
+  const [conBool, setConBool] = useState(false);
+  const [polyBool, setPolyBool] = useState(false);
+
   const count = useRef(0)
 
     useEffect(() => {
@@ -31,17 +33,37 @@ const Map = ({center}) => {
         .catch((err) => console.log(err));
         count.current++
       }, 250);
+
+      setInterval(() => {     
+        dynamicTest()
+      }, 50)
     }, []);
+
+    const handleConBoolChange = () => {
+      setConBool(prev => !prev)
+    }
+
+    const handlePolyBoolChange = () => {
+      setPolyBool(prev => !prev)
+    }
 
   // Markers stuff
     const [markersList, setMarkersList] = useState([]);
     const [camsCoordinates, setCamsCoordinates] = useState([
       { lat: 50.44714720363349, lng: 30.452590622531584 },
-      { lat: 50.44757789474116, lng: 30.452964910951152 },
-      { lat: 50.44674295691523, lng: 30.453867984211996 },
-      { lat: 50.44742795916658, lng: 30.453964727138725 },
+      // { lat: 50.44757789474116, lng: 30.452964910951152 },
+      // { lat: 50.44674295691523, lng: 30.453867984211996 },
+      // { lat: 50.44742795916658, lng: 30.453964727138725 },
     ]);
-    const camsNewCoordinates = useRef(camsCoordinates)
+
+    
+    // Markers dynamic stuff
+
+    const dynamicTest = () => {
+      setCamsCoordinates(prev => prev.map(e => {return {lat: e.lat, lng: e.lng + 0.000005}}))
+    }
+    
+
     const [selected, setSelected] = useState(null)
 
     // Direction stuff
@@ -84,12 +106,14 @@ const Map = ({center}) => {
     // Adding Device Markers in array by coordinates
     const camsList = camsCoordinates.map((coordinate, indx) => (
       <DeviceMarker
-        state={{ selected, setSelected, setSelectedOrigin }}
+        state={{ selected, setSelected, setSelectedOrigin, calculateRoute }}
         key={indx.toString()}
         id={indx.toString()}
         position={coordinate}
-        name={`Cam ${indx + 1}`}
+        name={`Actor ${indx + 1}`}
         concentration={concentration}
+        conbool={conBool}
+        polybool={polyBool}
       />
     ));
 
@@ -119,7 +143,6 @@ const Map = ({center}) => {
 
     return (
       <div className={s.container}>
-
         <button
           onClick={() => {
             setMarkersList([]);
@@ -130,17 +153,17 @@ const Map = ({center}) => {
         </button>
 
         {/* Direction stuff */}
-        <button type="submit" onClick={calculateRoute}>
-          Calculate Route
-        </button>
+        <button onClick={calculateRoute}>Calculate Route</button>
 
-        <button type="submit" onClick={clearRoute}>
-          Clear Route
-        </button>
+        <button onClick={clearRoute}>Clear Route</button>
 
-        <button type="submit" onClick={() => console.log({distance, duration})}>
+        <button onClick={() => console.log({ distance, duration })}>
           Viev Console
         </button>
+
+        <button onClick={handleConBoolChange}>Viev Concentration</button>
+
+        <button onClick={handlePolyBoolChange}>Viev Trajectory</button>
 
         <GoogleMap
           mapContainerStyle={containerStyle}
@@ -153,7 +176,10 @@ const Map = ({center}) => {
         >
           {/* Directions render */}
           {directionsResponse && (
-            <DirectionsRenderer directions={directionsResponse} />
+            <DirectionsRenderer
+              options={{ preserveViewport: true, suppressMarkers: true }}
+              directions={directionsResponse}
+            />
           )}
 
           {/* Device Markers render */}
