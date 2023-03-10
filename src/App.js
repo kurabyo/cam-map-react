@@ -6,13 +6,12 @@ import './App.css';
 import { FunctionGraph } from './components/FunctionGraph';
 
 
-const API_KEY = process.env.REACT_APP_API_KEY
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const defaultCenter = {
   lat: 50.44742795916658, 
   lng: 30.453964727138725,
 };
-
 
 const App = () => {
   const { isLoaded } = useJsApiLoader({
