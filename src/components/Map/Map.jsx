@@ -15,8 +15,31 @@ const defaultOptions = {
   panControl: false,
   disableDoubleClickZoom: true,
 };
+
+const options = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0,
+};
   
 const Map = ({center}) => {
+  // Position stuff
+  
+  function success(pos) {
+    const crd = pos.coords;
+  
+    console.log(pos)
+    console.log("Your current position is:");
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
+    setCamsCoordinates(prev => [{lat: crd.latitude, lng: crd.longitude}])
+  }
+  
+  function error(err) {
+    alert(err.message);
+  }
+
   // Concentration stuff 
   const [concentration, setConcentration] = useState(0);
   const [conBool, setConBool] = useState(false);
@@ -29,14 +52,15 @@ const Map = ({center}) => {
         if (count.current > 100) count.current = 0
         fetch('https://jsonplaceholder.typicode.com/todos')
         .then((res) => res.json())
-        .then((data) => setConcentration(prev => data[count.current].id + Math.random()))
+        .then((data) => setConcentration(data[count.current].id + Math.random()))
         .catch((err) => console.log(err));
         count.current++
       }, 250);
 
-      setInterval(() => {     
-        dynamicTest()
-      }, 50)
+      // setInterval(() => {     
+      //   dynamicTest()
+      // }, 50)
+      navigator.geolocation.watchPosition(success, error, options)
     }, []);
 
     const handleConBoolChange = () => {
@@ -48,6 +72,7 @@ const Map = ({center}) => {
     }
 
   // Markers stuff
+    const [selected, setSelected] = useState(null)
     const [markersList, setMarkersList] = useState([]);
     const [camsCoordinates, setCamsCoordinates] = useState([
       { lat: 50.44714720363349, lng: 30.452590622531584 },
@@ -57,6 +82,8 @@ const Map = ({center}) => {
     ]);
 
     
+
+    
     // Markers dynamic stuff
 
     const dynamicTest = () => {
@@ -64,7 +91,6 @@ const Map = ({center}) => {
     }
     
 
-    const [selected, setSelected] = useState(null)
 
     // Direction stuff
     const [directionsResponse, setDirectionsResponse] = useState(null)
