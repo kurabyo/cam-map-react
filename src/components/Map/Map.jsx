@@ -3,6 +3,7 @@ import { GoogleMap, DirectionsRenderer } from '@react-google-maps/api';
 import s from './Map.module.css'
 import { DeviceMarker } from "../DeviceMarker";
 import { DirectionMarker } from "../DirectionMarker";
+import axios from "axios";
 
 const containerStyle = {
   width: "75vw",
@@ -15,30 +16,26 @@ const defaultOptions = {
   panControl: false,
   disableDoubleClickZoom: true,
 };
-
-const options = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0,
-};
   
 const Map = ({center}) => {
-  // Position stuff
   
-  function success(pos) {
-    const crd = pos.coords;
-  
-    console.log(pos)
-    console.log("Your current position is:");
-    console.log(`Latitude : ${crd.latitude}`);
-    console.log(`Longitude: ${crd.longitude}`);
-    console.log(`More or less ${crd.accuracy} meters.`);
-    setCamsCoordinates(prev => [{lat: crd.latitude, lng: crd.longitude}])
-  }
-  
-  function error(err) {
-    alert(err.message);
-  }
+  useEffect(() => {
+    setInterval(() => {
+      if (count.current > 100) count.current = 0
+      fetch('https://jsonplaceholder.typicode.com/todos')
+      .then((res) => res.json())
+      .then((data) => setConcentration(data[count.current].id + Math.random()))
+      .catch((err) => console.log(err));
+      count.current++
+    }, 250);
+
+    setInterval(() => {     
+      axios.get('http://localhost:4000/').then((res) => {
+        setCamsCoordinates([{lat: res.data.lat, lng: res.data.lng}])
+      })
+    }, 1000)
+  }, []);
+
 
   // Concentration stuff 
   const [concentration, setConcentration] = useState(0);
@@ -46,22 +43,6 @@ const Map = ({center}) => {
   const [polyBool, setPolyBool] = useState(false);
 
   const count = useRef(0)
-
-    useEffect(() => {
-      setInterval(() => {
-        if (count.current > 100) count.current = 0
-        fetch('https://jsonplaceholder.typicode.com/todos')
-        .then((res) => res.json())
-        .then((data) => setConcentration(data[count.current].id + Math.random()))
-        .catch((err) => console.log(err));
-        count.current++
-      }, 250);
-
-      // setInterval(() => {     
-      //   dynamicTest()
-      // }, 50)
-      navigator.geolocation.watchPosition(success, error, options)
-    }, []);
 
     const handleConBoolChange = () => {
       setConBool(prev => !prev)
@@ -74,21 +55,16 @@ const Map = ({center}) => {
   // Markers stuff
     const [selected, setSelected] = useState(null)
     const [markersList, setMarkersList] = useState([]);
-    const [camsCoordinates, setCamsCoordinates] = useState([
-      { lat: 50.44714720363349, lng: 30.452590622531584 },
-      // { lat: 50.44757789474116, lng: 30.452964910951152 },
-      // { lat: 50.44674295691523, lng: 30.453867984211996 },
-      // { lat: 50.44742795916658, lng: 30.453964727138725 },
-    ]);
+    const [camsCoordinates, setCamsCoordinates] = useState([{lat: 51.34535,lng:51.225243}]);
 
     
 
     
     // Markers dynamic stuff
 
-    const dynamicTest = () => {
-      setCamsCoordinates(prev => prev.map(e => {return {lat: e.lat, lng: e.lng + 0.000005}}))
-    }
+    // const dynamicTest = () => {
+    //   setCamsCoordinates(prev => prev.map(e => {return {lat: e.lat, lng: e.lng + 0.000005}}))
+    // }
     
 
 

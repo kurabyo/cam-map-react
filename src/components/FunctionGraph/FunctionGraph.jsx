@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import s from "./FunctionGraph.module.css";
-import { io } from "socket.io-client";
 import {
   LineChart,
   Line,
@@ -12,14 +11,6 @@ import {
 
 export const FunctionGraph = () => {
   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const socket = io("http://localhost:4000/")
-    
-    socket.on("message", (data) => {
-      setData(data);
-    });
-  }, []);
 
   return (
     <div className={s.container} id="chart">
